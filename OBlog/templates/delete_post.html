@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Delete Blog Post...
+{% endblock %}
+
+{% block content %} 
+    {% if user.is_authenticated %}
+        {% if user == post.author or user.is_superuser  %}
+            <h1>Delete Blog Post</h1>
+            <h3>Delete: {{post.title}}</h3>
+            <h4>By: {{ post.author }} </h4>
+            <div class="form-group">
+                <form method="POST">
+                    {% csrf_token %}
+                    <strong>Tem certeza??</strong><br/>
+                    <button class="btn btn-secondary">Delete</button>
+            </div>
+        {% else %}
+            <h1>Sorry, you can't delete this post.</h1>
+        {% endif %}
+    {% else %}
+        Tem de fazer Login para apagar o post!
+    {% endif %}
+{% endblock %}

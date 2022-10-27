@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ post.title }}
+{% endblock %}
+
+{% block content %}
+current user : {{ user.username }}
+current post : {{ post.id }}
+    <h1> {{ post.title }} </h1>
+    <small>By: 
+        {{ post.author.first_name }} 
+        {{ post.author.last_name }} - 
+    <small>{{ post.date_post }}</small>
+        {% if user.is_authenticated %}
+            {% if user.id == post.author.id or user.is_superuser %}
+                <small>
+                    <a href="{% url 'update_post' post.pk %}">[Edit]</a>
+                    <a href="{% url 'delete_post' post.pk %}">[Delete]</a>
+                </small>
+                <br/>
+                <hr>
+                <p> {{ post.body|safe }} </p>
+                <br>
+                <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+            {% else %}
+                <br/>
+                <hr>
+                <p> {{ post.body|safe }} </p>
+                <br>
+                <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+            {% endif %}
+        {% else %}
+            </small>
+            <br/>
+            <hr>
+            <p> {{ post.body|safe }} </p>
+            <br>
+            <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>        
+        {% endif %}       
+        <br><br>
+        <hr>
+        <br/>
+        <form action="{% url 'like_post' post.id %}"
+            method="POST">
+                {% csrf_token %}
+                    {% if user.is_authenticated %}
+                        {% if liked %}
+                            <button type="submit", name="post_id", value="{{ post.id }}" class="btn btn-danger btn-sm">
+                                <i class="fas fa-thumbs-down"></i>
+                                Unlike
+                            </button>
+                        {% else %}
+                            <button type="submit", name="post_id", value="{{ post.id }}" class="btn btn-success btn-sm">
+                                <i class="fas fa-thumbs-up"></i>
+                                Like
+                            </button>
+                        {% endif %}
+                    {% else %}
+                        <small><a href="{% url 'login' %}">Login</a> para like</small>
+                    {% endif %} 
+                    - {{ total_likes }} Likes
+                        </form>        
+{% endblock %}
