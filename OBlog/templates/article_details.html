@@ -1,12 +1,10 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}
 {{ post.title }}
 {% endblock %}
 
 {% block content %}
-current user : {{ user.username }}
-current post : {{ post.id }}
     <h1> {{ post.title }} </h1>
     <small>By: 
         {{ post.author.first_name }} 
@@ -20,12 +18,9 @@ current post : {{ post.id }}
                 </small>
                 <br/>
                 <hr>
-                <p> {{ post.body|safe }} </p>
-                <br>
-                <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
-            {% else %}
-                <br/>
-                <hr>
+                    {% if post.header_image %}
+                    <img src="{{ post.header_image.url }}">
+                    {% endif %}
                 <p> {{ post.body|safe }} </p>
                 <br>
                 <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
@@ -34,11 +29,14 @@ current post : {{ post.id }}
             </small>
             <br/>
             <hr>
+                {% if post.header_image %}
+                <img src="{{ post.header_image.url }}">
+                {% endif %}
             <p> {{ post.body|safe }} </p>
             <br>
             <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>        
         {% endif %}       
-        <br><br>
+        <br/>
         <hr>
         <br/>
         <form action="{% url 'like_post' post.id %}"
@@ -60,5 +58,45 @@ current post : {{ post.id }}
                         <small><a href="{% url 'login' %}">Login</a> para like</small>
                     {% endif %} 
                     - {{ total_likes }} Likes
-                        </form>        
+                        </form>     
+                        
+        <div class="card mb-3">
+            <div class="row no-gutters">
+                <div class="col-md-1">
+                    {% if post.author.profile.profile_pic %}
+                    <img src="{{ post.author.profile.profile_pic.url }}" class="card_img"  width=125 height=125>
+                    {% else %}
+                    <img src="{% static 'OBlog/images/default.png' %}" class="card_img"  width=125 height=125>
+                    {% endif %}
+                </div>
+                    <div class="col-md-10">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            {{ post.author.first_name }}
+                            {{ post.author.last_name }}
+                        </h5>
+                        <p class="small text-muted">
+                            {% if post.author.profile.website_url %}
+                            <a href="{{ post.author.profile.website_url }}" style="text-decoration:none">Website</a> 
+                            {% endif %}
+                            {% if post.author.profile.facebook_url %} 
+                            | <a href="{{ post.author.profile.facebook_url }}" style="text-decoration:none">Facebook</a>
+                            {% endif %}
+                            {% if post.author.profile.twitter_url %}
+                            | <a href="{{ post.author.profile.twitter_url }} "style="text-decoration:none">Twitter </a>
+                            {% endif %}
+                            {% if post.author.profile.instagram_url %}
+                            | <a href="{{ post.author.profile.instagram_url }}" style="text-decoration:none">Instagram </a>
+                            {% endif %}
+                            {% if post.author.profile.linkedin_url %}
+                            | <a href="{{ post.author.profile.pinterest_url }}" style="text-decoration:none">Pinterest </a>
+                            {% endif %}
+                        </p>
+                        <p class="card-text">
+                            {{ post.author.profile.bio }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
 {% endblock %}
