@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Category, Post
+from .models import Category, Post, Comment
 
 choices = Category.objects.all().values_list('name', 'name')
 
@@ -18,3 +18,13 @@ class PostForm(forms.ModelForm):
             'body': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description'}),
             'snippet': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Snippet'}),
         }
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('name', 'body')
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Name'}),
+            'body': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Comment'}),
+        }
+

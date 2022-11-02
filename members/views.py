@@ -1,12 +1,44 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from django.views import generic
+from django.views.generic import DetailView, CreateView
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.urls import reverse_lazy
 from django.contrib.auth.views import PasswordChangeView
-from members.forms import SignUpForm, EditProfileForm, PasswordChangingForm
+from OBlog.models import Profile
+from members.forms import SignUpForm, EditProfileForm, PasswordChangingForm, ProfilePageForm
+
 
 
 # Create your views here.
+
+class CreateprofilePageView(CreateView):
+    model = Profile
+    form_class = ProfilePageForm
+    template_name = 'registration/create_user_profile_page.html'
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class EditProfilePageView(generic.UpdateView):
+    model = Profile
+    template_name = 'registration/edit_profile_page.html'
+    fields = ['bio', 'profile_pic', 'website_url', 'facebook_url', 'twitter_url', 'instagram_url']
+    success_url = reverse_lazy('home')
+
+
+class ShowProfilPageView(DetailView):
+    model = Profile
+    template_name = 'registration/user_profile.html'
+    context_object_name = 'user'
+
+    def get_context_data(self, *args, **kwargs):
+        users = Profile.objects.all()
+        context = super(ShowProfilPageView, self).get_context_data(*args, **kwargs)
+        page_user = get_object_or_404(Profile, id=self.kwargs['pk'])
+        context["page_user"] = page_user
+        return context
 
 class PasswordsChangeView(PasswordChangeView):
     form_class = PasswordChangingForm

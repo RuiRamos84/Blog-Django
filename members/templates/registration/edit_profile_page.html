@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Edit Profile Page...
+{% endblock %}
+
+{% block content %} 
+    {% if user.is_authenticated %}
+        {% if user.id == profile.user.id %}
+            <h1>Edit Profile Page...</h1>
+            <div class="form-group">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="btn btn-secondary">Update Profile Page</button>
+            </div>
+        
+    {% else %}
+        Necessita de fazer login para editar o perfil.
+    {% endif %}
+{% else %}
+    Necessita de fazer login para editar o perfil.
+{% endif %}
+
+
+{% endblock %}
