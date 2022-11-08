@@ -1,17 +1,17 @@
 <!doctype html>
-{% load static %}
 <html lang="pt-pt">
-    <head>
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
-        {% block title %}
+      {% load static %}
+      {% block title %}
         Blog!!
         {% endblock %}
         </title>
+        <link rel="stylesheet" href="{% static 'style.css' %}"/>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="{% static 'OBlog/css/style.css' %}"/>
-    </head>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
@@ -30,23 +30,6 @@
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'add_category' %}">Add Categoria</a>
-                  </li>
-                  <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Profile
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Editar definições</a></li>
-                      {% if user.profile.id %}
-                      <li><a class="dropdown-item" href="{% url 'edit_profile_page' user.profile.id %}">Edit Profile Page</a></li>
-                      <li><a class="dropdown-item" href="{% url 'show_profile_page' user.profile.id %}">Show Profile Page</a></li>
-                      {% else %}
-                      <li><a class="dropdown-item" href="{% url 'create_profile_page' %}">Create Profile Page</a></li>
-                      {% endif %}
-                    </ul>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                   </li>
                   {% else %}
                   <li class="nav-item">
@@ -70,7 +53,6 @@
                     </ul>
                   </li>
                   {% else %}
-                  
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'category_list' %}">Categorias</a>
                   </li>
@@ -78,7 +60,48 @@
                   <li class="nav-item">
                     <a class="nav-link disabled">Disabled</a>
                   </li>
-                </ul>           
+                </ul>
+                {% if user.is_authenticated %}
+                    <ul class="navbar-nav mr-auto" >
+                      <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          
+                          {% if user.profile.profile_pic %}
+                            <img 
+                              src="{{ user.profile.profile_pic.url }}" 
+                              class="rounded-circle"
+                              height="28">
+                          {% else %}
+                            <img 
+                              src="{% static 'OBlog/images/default.png' %}" 
+                              class="rounded-circle"
+                              height="28">
+                            {{ user.first_name}}
+                            {{ user.last_name}}
+
+
+                          {% endif %}
+                        </a>
+                          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Editar definições</a></li>
+                            {% if user.profile.id %}
+                            <li><a class="dropdown-item" href="{% url 'edit_profile_page' user.profile.id %}">Edit Profile Page</a></li>
+                            <li><a class="dropdown-item" href="{% url 'show_profile_page' user.profile.id %}">Show Profile Page</a></li>
+                            {% else %}
+                            <li><a class="dropdown-item" href="{% url 'create_profile_page' %}">Create Profile Page</a></li>
+                            {% endif %}
+                            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                          </ul>
+                      </li>
+                    </ul>
+                  {% endif %}
+
+                  <form action="">
+                    <input type="search" required>
+                    <i class="fa fa-search"></i>
+                    <a href="javascript:void(0)" id="clear-btn">Clear</a>
+                  </form>
+                  
                 <form class="d-flex" role="search">
                   <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                   <button class="btn btn-outline-success" type="submit">Search</button>
@@ -86,15 +109,11 @@
               </div>
             </div>
           </nav>
-
-
         <div class ="container">      
         {% block content %}
         
         {% endblock %}
         </div>
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
     </body>
 </html>

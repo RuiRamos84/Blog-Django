@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %} 
     <h1>Blog</h1>
@@ -8,18 +9,25 @@
                 <a href= "{% url 'article_detail' post.pk %}">
                     <h2>{{ post.title }}</h2>
                 </a>
-                <small>By: <a href=" {% url 'category' post.category|slugify %} ">{{ post.category }}</a> || {{ post.author.first_name }} {{ post.author.last_name }} 
-                    {% if user.is_authenticated %} 
-                        {% if user == post.author or user.is_superuser  %} - 
-                        <small>
-                            <a href="{% url 'update_post' post.pk %}">[Edit]</a>
-                            <a href="{% url 'delete_post' post.pk %}">[Delete]</a>
-                        </small>
-                        {% endif %}
+                {% if user.is_authenticated %} 
+                    {% if user == post.author or user.is_superuser  %}
+                    <small>
+                        <a href="{% url 'update_post' post.pk %}">[Edit]</a>
+                        <a href="{% url 'delete_post' post.pk %}">[Delete]</a>
+                    </small>
                     {% endif %}
-                </small>
-                <br/>
-                {{ post.snippet|truncatewords:50|safe }}
+                {% endif %}
+                    <small>By: <a href=" {% url 'category' post.category|slugify %} ">{{ post.category }}</a> || {{ post.author.first_name }} {{ post.author.last_name }} 
+                    </small>
+                    <small>
+                        <i class="bi bi-hand-thumbs-up-fill position-relative" style="font-size: 1rem; color: Facebook ">
+                            <span class="position-absolute top-100 start-250 translate-middle badge rounded-pill bg-info" style="font-size: .425em" >
+                                {{ post.total_likes }}
+                                <span class="visually-hidden">unread messages</span>
+                                </span>
+                            </i></small>
+                        <br/>
+                    {{ post.snippet|truncatewords:50|safe }}
             </li>
         {% endfor %}
     </ul>
